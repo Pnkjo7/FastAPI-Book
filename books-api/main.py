@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from . import schemas
 from . import database
 
@@ -19,3 +19,13 @@ def convert_into_book_db_model(book: schemas.Book):
 
 def convert_into_author_db_model(author: schemas.Author):
 	return database.Author(first_name=author.first_name, last_name=author.last_name)
+
+@app.get("/book/{book_id}")
+def retreive_book(book_id:int):
+	try:
+		return database.get_book(book_id)
+	except Exception as e:
+		print(e)
+		raise HTTPException(status_code=404, detail=repr(e))
+		
+
